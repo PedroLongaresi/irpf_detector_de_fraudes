@@ -27,10 +27,10 @@ Este **Roteiro de Teste Funcional e Forense (RTF)** guia passo a passo a execuç
 
 ## 2. Pré-Condições do Ambiente de Teste (Setup QA & Blue Team)
 
-Antes de iniciar a execução dos roteiros `RT-00` a `RT-07A`, configure na base corporativa/homologação o titular correspondente ao documento original [GILSONEI-IRPF-2026-2025-origi-imagem-declaracao.pdf](file:///c:/Users/Longaresi/Documents/PROJETO%20IRPF/GILSONEI-IRPF-2026-2025-origi-imagem-declaracao.pdf):
+Antes de iniciar a execução dos roteiros `RT-00` a `RT-07A`, configure na base corporativa/homologação o titular correspondente ao documento original [XXXXX-IRPF-2026-2025-origi-imagem-declaracao.pdf]:
 
-- **Nome Cadastrado na Base Corporativa:** `GILSONEI DOS SANTOS`
-- **CPF Cadastrado na Base Corporativa:** `250.713.388-07`
+- **Nome Cadastrado na Base Corporativa:** `XXXXXX DOS SANTOS`
+- **CPF Cadastrado na Base Corporativa:** `XXX.XXX.XXX-XX`
 - **Data de Nascimento:** `30/01/1977`
 - **Regra de Vigência Ativa no IU Docs:** `EXERCÍCIO 2026` / `ANO-CALENDÁRIO 2025`
 - **Assinatura Forense Baseline na Certa:**
