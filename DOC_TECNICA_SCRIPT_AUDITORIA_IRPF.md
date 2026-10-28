@@ -9,7 +9,7 @@
 
 ## 1. Sumário Executivo & Contexto do Negócio
 
-Durante o processo de homologação e Prova de Conceito (PoC) do fornecedor externo **VerifAI Docs (Certta)** para perícia de IRPF, identificamos duas vulnerabilidades severas:
+Durante o processo de homologação e Prova de Conceito (PoC) do fornecedor externo para perícia de IRPF, identificamos duas vulnerabilidades severas:
 1. **Evasão Total Diante de Fraudes Estruturadas (0% de Retenção):** O fornecedor depende quase que exclusivamente de assinaturas de editores web gratuitos (ex.: iLovePDF). Quando submetido a ataques cirúrgicos de adulteração de renda (máscaras *whiteout*, texto invisível `3 Tr`, manipulação de tabela xref e fontes nativas), o fornecedor classificou 100% dos documentos fraudados como **"Baixo Risco"** (falsos negativos com alto risco de inadimplência/PDD).
 2. **Fragilidade Operacional & Travamento de Esteira (222 min de Indisponibilidade):** A submissão de arquivos com senha (`/Encrypt`) ou canários ativos gerou congelamento total dos workers de ingestão por **3h 42m**, exigindo intervenção humana.
 
@@ -37,7 +37,7 @@ O script atua diretamente na camada binária (objetos e árvores PDF) e na camad
                                     │ (Arquivo Seguro)
                                     ▼
        ┌────────────────────────────────────────────────────────┐
-       │   CAMADA 2: Perícia Binária & Metadados Estruturais     │
+       │   CAMADA 2: Perícia Binária & Metadados Estruturais    │
        │   • Detecção de Multi-EOF (%%EOF > 1 / Incremental)    │
        │   • Assinaturas de Editores Externos (Canva, iLovePDF) │
        │   • Discrepância de Datas (/CreationDate != /ModDate)  │
@@ -112,34 +112,34 @@ Rodando o script em lote contra a massa oficial de 26 arquivos PDF (`CT00` a `CT
 
 ```text
 ====================================================================================================
-CASO DE TESTE / ARQUIVO                                 | STATUS         | SCORE   | VIOLAÇÕES  | TEMPO  
+CASO DE TESTE / ARQUIVO                                          | STATUS          | SCORE   | VIOLAÇÕES | TEMPO  
 ====================================================================================================
-CT00_ORIGINAL_VALIDO_IRPF_2026_2025.pdf                 | ✅ APROVADO     |   0/100 |         0 |  13.2ms
-CT01A_AUTENTICIDADE_SEM_MARCA_DAGUA.pdf                 | ❌ REPROVADO    |  30/100 |         1 |  12.3ms
-CT01B_AUTENTICIDADE_STATUS_RASCUNHO.pdf                 | ❌ REPROVADO    |  80/100 |         2 |  12.3ms
-CT01C_AUTENTICIDADE_RETIFICADORA_SEM_RECIBO_VALIDO.pdf  | ❌ REPROVADO    |  30/100 |         1 |  11.8ms
-CT01D_AUTENTICIDADE_DECLARACAO_FINAL_DE_ESPOLIO_IUDOCS.pdf | ❌ REPROVADO |  30/100 |         1 |  10.8ms
-CT02A_TITULARIDADE_CPF_DIVERGENTE_IUDOCS.pdf            | ❌ REPROVADO    |  50/100 |         1 |  11.9ms
-CT02B_TITULARIDADE_NOME_DIVERGENTE_IUDOCS.pdf           | ✅ APROVADO*    |   0/100 |         0 |  11.4ms
-CT02C_TITULARIDADE_INVERSAO_ALIMENTANDO_COMO_TITULAR.pdf| ❌ REPROVADO    | 100/100 |         9 |  11.7ms
-CT03A_VIGENCIA_EXERCICIO_EXPIRADO_2023_2022_IUDOCS.pdf  | ✅ APROVADO**   |   0/100 |         0 |  12.0ms
-CT03B_VIGENCIA_ANO_CALENDARIO_INCONSISTENTE_IUDOCS.pdf  | ❌ REPROVADO    |  30/100 |         1 |  12.2ms
-CT04A_PAGINAS_INCOMPLETO_FALTA_PAGINA_7.pdf             | ❌ REPROVADO    |  60/100 |         2 |  11.1ms
-CT04B_PAGINAS_FORA_DE_SEQUENCIA.pdf                     | ❌ REPROVADO    |  80/100 |         2 |  12.3ms
-CT04C_PAGINAS_INCOERENCIA_CABECALHO_E_RESUMO.pdf        | ❌ REPROVADO    | 100/100 |         3 |  13.1ms
-CT04D_PAGINAS_ENVIO_APENAS_PAGINA_1.pdf                 | ❌ REPROVADO    |  30/100 |         1 |  10.9ms
-CT04E_PAGINAS_8_DE_8_FALSO_PAGINA_6_DUPLICADA.pdf       | ❌ REPROVADO    |  80/100 |         2 |  11.4ms
-CT05A_MANIPULACAO_METADADOS_E_INCREMENTAL_CERTA.pdf     | ❌ REPROVADO    |  30/100 |         1 |  11.8ms
-CT05B_MANIPULACAO_SOBREPOSICAO_WHITEOUT_CERTA.pdf       | ❌ REPROVADO    | 100/100 |         2 |  12.2ms
-CT05C_MANIPULACAO_PDF_ACHATADO_PRINT_TO_PDF_CERTA.pdf   | ❌ REPROVADO    |  30/100 |         1 |  12.1ms
-CT06A_FONTES_TIPOGRAFIA_DIVERGENTE_COURIER_CERTA.pdf    | ❌ REPROVADO    |  60/100 |         2 |  11.0ms
-CT06B_FONTES_DESALINHAMENTO_E_ESCALA_CERTA.pdf          | ❌ REPROVADO    |  30/100 |         1 |  11.1ms
-CT06C_FONTES_TEXTO_INVISIVEL_DUAL_LAYER_CERTA.pdf       | ❌ REPROVADO    |  50/100 |         1 |  11.3ms
-CT07A_GAP_RECEITA_FEDERAL_RECIBO_E_RENDA.pdf            | ❌ REPROVADO    |  50/100 |         1 |  10.9ms
-CT07B_GAP_RECEITA_FEDERAL_MATEMATICA_PERFEITA_REDTEAM.pdf | ⚠️  GAP RFB  |  40/100 |         0 |  11.6ms
-CT07C_COERENCIA_RENDIMENTOS_ISENTOS_INFLADOS.pdf        | ❌ REPROVADO    |  50/100 |         1 |  11.9ms
-CT08A_APPSEC_PDF_PROTEGIDO_POR_SENHA_ENCRYPT.pdf        | ❌ REPROVADO    |  50/100 |         1 |  11.0ms
-CT08B_APPSEC_PDF_PAYLOAD_JAVASCRIPT_OPENACTION.pdf      | ❌ REPROVADO    |  50/100 |         1 |  10.9ms
+CT00_ORIGINAL_VALIDO_IRPF_2026_2025.pdf                         | ✅ APROVADO     |   0/100 |         0 |  13.2ms
+CT01A_AUTENTICIDADE_SEM_MARCA_DAGUA.pdf                         | ❌ REPROVADO    |  30/100 |         1 |  12.3ms
+CT01B_AUTENTICIDADE_STATUS_RASCUNHO.pdf                         | ❌ REPROVADO    |  80/100 |         2 |  12.3ms
+CT01C_AUTENTICIDADE_RETIFICADORA_SEM_RECIBO_VALIDO.pdf          | ❌ REPROVADO    |  30/100 |         1 |  11.8ms
+CT01D_AUTENTICIDADE_DECLARACAO_FINAL_DE_ESPOLIO_REDE_INTERNA.pdf| ❌ REPROVADO    |  30/100 |         1 |  10.8ms
+CT02A_TITULARIDADE_CPF_DIVERGENTE_REDE_INTERNA.pdf              | ❌ REPROVADO    |  50/100 |         1 |  11.9ms
+CT02B_TITULARIDADE_NOME_DIVERGENTE_REDE_INTERNA.pdf             | ✅ APROVADO*    |   0/100 |         0 |  11.4ms
+CT02C_TITULARIDADE_INVERSAO_ALIMENTANDO_COMO_TITULAR.pdf        | ❌ REPROVADO    | 100/100 |         9 |  11.7ms
+CT03A_VIGENCIA_EXERCICIO_EXPIRADO_2023_2022_REDE_INTERNA.pdf    | ✅ APROVADO**   |   0/100 |         0 |  12.0ms
+CT03B_VIGENCIA_ANO_CALENDARIO_INCONSISTENTE_REDE_INTERNA.pdf    | ❌ REPROVADO    |  30/100 |         1 |  12.2ms
+CT04A_PAGINAS_INCOMPLETO_FALTA_PAGINA_7.pdf                     | ❌ REPROVADO    |  60/100 |         2 |  11.1ms
+CT04B_PAGINAS_FORA_DE_SEQUENCIA.pdf                             | ❌ REPROVADO    |  80/100 |         2 |  12.3ms
+CT04C_PAGINAS_INCOERENCIA_CABECALHO_E_RESUMO.pdf                | ❌ REPROVADO    | 100/100 |         3 |  13.1ms
+CT04D_PAGINAS_ENVIO_APENAS_PAGINA_1.pdf                         | ❌ REPROVADO    |  30/100 |         1 |  10.9ms
+CT04E_PAGINAS_8_DE_8_FALSO_PAGINA_6_DUPLICADA.pdf               | ❌ REPROVADO    |  80/100 |         2 |  11.4ms
+CT05A_MANIPULACAO_METADADOS_E_INCREMENTAL_CERTA.pdf             | ❌ REPROVADO    |  30/100 |         1 |  11.8ms
+CT05B_MANIPULACAO_SOBREPOSICAO_WHITEOUT_CERTA.pdf               | ❌ REPROVADO    | 100/100 |         2 |  12.2ms
+CT05C_MANIPULACAO_PDF_ACHATADO_PRINT_TO_PDF_CERTA.pdf           | ❌ REPROVADO    |  30/100 |         1 |  12.1ms
+CT06A_FONTES_TIPOGRAFIA_DIVERGENTE_COURIER_CERTA.pdf            | ❌ REPROVADO    |  60/100 |         2 |  11.0ms
+CT06B_FONTES_DESALINHAMENTO_E_ESCALA_CERTA.pdf                  | ❌ REPROVADO    |  30/100 |         1 |  11.1ms
+CT06C_FONTES_TEXTO_INVISIVEL_DUAL_LAYER_CERTA.pdf               | ❌ REPROVADO    |  50/100 |         1 |  11.3ms
+CT07A_GAP_RECEITA_FEDERAL_RECIBO_E_RENDA.pdf                    | ❌ REPROVADO    |  50/100 |         1 |  10.9ms
+CT07B_GAP_RECEITA_FEDERAL_MATEMATICA_PERFEITA_REDTEAM.pdf       | ⚠️  GAP RFB     |  40/100 |         0 |  11.6ms
+CT07C_COERENCIA_RENDIMENTOS_ISENTOS_INFLADOS.pdf                | ❌ REPROVADO    |  50/100 |         1 |  11.9ms
+CT08A_APPSEC_PDF_PROTEGIDO_POR_SENHA_ENCRYPT.pdf                | ❌ REPROVADO    |  50/100 |         1 |  11.0ms
+CT08B_APPSEC_PDF_PAYLOAD_JAVASCRIPT_OPENACTION.pdf              | ❌ REPROVADO    |  50/100 |         1 |  10.9ms
 ====================================================================================================
 📊 CONSOLIDADO: Total=26 | ✅ Aprovados=3 | ❌ Reprovados=22 | ⚠️  Gap RFB (Serpro Obrigatório)=1
 ```
@@ -200,4 +200,4 @@ python scripts/auditar_declaracoes_irpf.py --file documento.pdf --json
 
 1. **Empacotamento em Módulo/Microserviço:** Expor a classe `ZeroKnowledgeIRPFAuditor` como endpoint REST (`POST /api/v1/irpf/audit`) em FastAPI ou função Serverless.
 2. **Integração com Telemetria SIEM:** Exportar as violações (`AuditViolation`) no padrão CEF/Syslog para monitoramento em tempo real de campanhas de fraude no Splunk / Datadog.
-3. **Apresentação em Tech Review:** Demonstração prática do script rodando em lote e comparativo de resiliência versus a solução Certta.
+3. **Apresentação em Tech Review:** Demonstração prática do script rodando em lote e comparativo de resiliência versus a solução DE TERCEIROS.

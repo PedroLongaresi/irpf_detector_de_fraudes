@@ -19,7 +19,7 @@ O motor opera no modelo **Zero-Knowledge (Perícia Cega)**: ele audita e identif
 
 ## 🚨 O Problema que Resolve
 
-Em testes homologatórios de soluções de mercado (ex.: VerifAI Docs / Certta), constatou-se:
+Em testes homologatórios de soluções de mercado, constatou-se:
 1. **0% de Retenção em Fraudes Vetoriais:** Documentos com renda inflada via máscara branca (*whiteout*), texto invisível (`3 Tr`) e recálculo manual de fontes passaram com classificação de **"Baixo Risco"** (100% de concessão indevida / risco de PDD).
 2. **222 minutos de Parada de Esteira:** Arquivos protegidos por senha (`/Encrypt`) ou com canários de rede travaram a ingestão por **3h 42m** por ausência de *circuit breaker*.
 
@@ -140,8 +140,8 @@ python scripts/auditar_declaracoes_irpf.py --dir arquivos_teste_irpf/
 ```bash
 python scripts/auditar_declaracoes_irpf.py \
   --file documento.pdf \
-  --expected-cpf "250.713.388-07" \
-  --expected-nome "GILSONEI DOS SANTOS" \
+  --expected-cpf "XXX.XXX.XXX-XX" \
+  --expected-nome "XXXXX DOS SANTOS" \
   --expected-exercicio "2026"
 ```
 
