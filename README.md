@@ -19,7 +19,7 @@ O motor opera no modelo **Zero-Knowledge (Perícia Cega)**: ele audita e identif
 
 ## 🚨 O Problema que Resolve
 
-Em testes homologatórios de soluções de mercado (ex.: VerifAI Docs / Certta), constatou-se:
+Em testes homologatórios de soluções de mercado, constatou-se:
 1. **0% de Retenção em Fraudes Vetoriais:** Documentos com renda inflada via máscara branca (*whiteout*), texto invisível (`3 Tr`) e recálculo manual de fontes passaram com classificação de **"Baixo Risco"** (100% de concessão indevida / risco de PDD).
 2. **222 minutos de Parada de Esteira:** Arquivos protegidos por senha (`/Encrypt`) ou com canários de rede travaram a ingestão por **3h 42m** por ausência de *circuit breaker*.
 
@@ -86,6 +86,44 @@ O motor foi testado contra uma suíte com 26 cenários de teste (`CT00` a `CT08B
 
 ---
 
+## 🎯 Entendendo o Score de Risco (0 a 100)
+
+O **Score de Risco** é um índice numérico determinístico que quantifica o grau de evidência técnica de manipulação, fraude ou inconsistência contábil no arquivo:
+
+### 🚦 Faixas de Decisão Operacional
+
+| Faixa de Score | Classificação | Significado Forense | Ação Recomendada na Esteira |
+| :---: | :---: | :--- | :--- |
+| **`0 / 100`** | 🟢 **Risco Zero** | Documento 100% íntegro, original da Receita Federal, sem nenhum rastro de adulteração. | **Aprovação Automática (*Straight-Through Processing - STP*)**. |
+| **`15 a 30 / 100`** | 🟡 **Risco Médio** | Inconsistências de regras de negócio ou arquivo re-salvo (marca d'água ausente, incremental update, exercício antigo). | **Transbordo para Mesa Humana** ou solicitação de reenvio. |
+| **`40 a 45 / 100`** | 🟠 **Alerta GAP RFB** | Documento matematicamente perfeito com renda expressiva, sujeito a fraude sintética Red Team (`CT07B`). | **Consulta Obrigatória na API SERPRO / RFB** para validação do recibo. |
+| **`50 a 100 / 100`** | 🔴 **Risco Crítico** | **Fraude confirmada:** máscara branca (*whiteout*), texto invisível `3 Tr`, páginas coladas de terceiros, CPF inválido ou quebra da equação tributária. | **Rejeição Automática Imediata** (economiza custo de OCR e mesa humana). |
+
+### 🧮 Composição do Cálculo (Pesos Cumulativos)
+
+* 🚨 **Violações CRÍTICAS (+50 pontos cada):**
+  * Máscara branca (*Whiteout* sobre valores originais de rendimento).
+  * Injeção de texto invisível (`3 Tr` / OCR poisoning).
+  * Quebra da Equação Tributária (Renda da Pág. 1/2 não bate com o imposto da Pág. 7).
+  * *Frankenstein PDF* (Página 1 tem um CPF e a Página 2 tem outro CPF diferente).
+  * Inversão de papéis (o titular é na verdade um alimentando/dependente).
+  * CPF com dígito verificador matematicamente inválido (Módulo 11 da RFB).
+  * PDF malicioso ou com senha (`/Encrypt`, `/OpenAction`, `/JavaScript`).
+
+* ⚠️ **Violações ALTAS (+30 pontos cada):**
+  * Supressão da marca d'água oficial `PROTEGIDA POR SIGILO FISCAL`.
+  * Status "EM PREENCHIMENTO" (Rascunho não transmitido à Receita Federal).
+  * Injeção de fontes não oficiais da RFB (`/Courier-Bold`, `/Arial`).
+  * Desalinhamento geométrico de números (salto no eixo $y$ ou escala distorcida `Tm`).
+  * Múltiplos `%%EOF` (revisões incrementais pós-emissão).
+  * Incompletude (ausência de páginas essenciais como o resumo tributário).
+
+* ℹ️ **Violações MÉDIAS (+15 pontos cada):**
+  * Exercício ou ano-calendário fora da janela aceita pela política de crédito.
+  * Discrepância temporal entre `/CreationDate` e `/ModDate` no dicionário `/Info`.
+
+---
+
 ## 💻 Como Utilizar
 
 ### 1. Auditoria Cega (Zero-Knowledge) em um único arquivo:
@@ -102,8 +140,8 @@ python scripts/auditar_declaracoes_irpf.py --dir arquivos_teste_irpf/
 ```bash
 python scripts/auditar_declaracoes_irpf.py \
   --file documento.pdf \
-  --expected-cpf "250.713.388-07" \
-  --expected-nome "GILSONEI DOS SANTOS" \
+  --expected-cpf "XXX.XXX.XXX-XX" \
+  --expected-nome "XXXXX DOS SANTOS" \
   --expected-exercicio "2026"
 ```
 
